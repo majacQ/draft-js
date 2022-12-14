@@ -4,9 +4,9 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @format
  * @flow
- * @emails oncall+draft_js
+ * @format
+ * @oncall draft_js
  */
 
 'use strict';
@@ -146,7 +146,7 @@ class DraftEditorContents extends React.Component<Props> {
 
     const blocksAsArray = content.getBlocksAsArray();
     const processedBlocks = [];
-    const alreadyEncounteredDepth = new Set();
+    const alreadyEncounteredDepth = new Set<number>();
     let currentDepth = null;
     let lastWrapperTemplate = null;
 

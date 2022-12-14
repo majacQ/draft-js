@@ -4,16 +4,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @emails oncall+draft_js
  * @flow strict-local
  * @format
+ * @oncall draft_js
  */
 
 'use strict';
 
-// DraftEditorComposition uses timers to detect duplicate `compositionend`
-// events.
-jest.useFakeTimers();
+import type DraftEditor from 'DraftEditor.react';
 
 const ContentBlock = require('ContentBlock');
 const ContentState = require('ContentState');
@@ -24,9 +22,15 @@ const convertFromHTMLToContentBlocks = require('convertFromHTMLToContentBlocks')
 const editOnCompositionStart = require('editOnCompositionStart');
 const {Map} = require('immutable');
 
+// DraftEditorComposition uses timers to detect duplicate `compositionend`
+// events.
+jest.useFakeTimers();
+
 jest.mock('DOMObserver', () => {
   function DOMObserver() {}
+  // $FlowFixMe[prop-missing]
   DOMObserver.prototype.start = jest.fn();
+  // $FlowFixMe[prop-missing]
   DOMObserver.prototype.stopAndFlushMutations = jest
     .fn()
     .mockReturnValue(Map({}));
@@ -46,9 +50,24 @@ jest.mock('getDraftEditorSelection', () => {
 // the module in a bad state we forcibly reload it each test.
 let compositionHandler = null;
 // Initialization of mock editor component that will be used for all tests
-let editor;
+let editor: {
+  _latestEditorState: EditorState,
+  _onCompositionStart: (editor: DraftEditor) => void,
+  _onKeyDown: JestMockFn<$FlowFixMe, $FlowFixMe>,
+  exitCurrentMode: JestMockFn<$FlowFixMe, $FlowFixMe>,
+  restoreEditorDOM: JestMockFn<$FlowFixMe, $FlowFixMe>,
+  setMode: JestMockFn<$FlowFixMe, $FlowFixMe>,
+  update: JestMockFn<$FlowFixMe, $FlowFixMe>,
+};
 
-function getEditorState(blocks) {
+function getEditorState(
+  blocks:
+    | $TEMPORARY$object<{blockkey0: string}>
+    | $TEMPORARY$object<{
+        blockkey0: $TEMPORARY$string<'react'>,
+        blockkey1: $TEMPORARY$string<'draft'>,
+      }>,
+) {
   const contentBlocks = Object.keys(blocks).map(blockKey => {
     return new ContentBlock({
       key: blockKey,
@@ -76,7 +95,10 @@ function editorTextContent() {
   return editor._latestEditorState.getCurrentContent().getPlainText();
 }
 
-function withGlobalGetSelectionAs(getSelectionValue, callback) {
+function withGlobalGetSelectionAs(
+  getSelectionValue: $TEMPORARY$object<{...}>,
+  callback: () => void,
+) {
   const oldGetSelection = global.getSelection;
   try {
     global.getSelection = () => getSelectionValue;
@@ -171,7 +193,7 @@ test('Can handle mutations in the same block in multiple leaf nodes', () => {
       .getBlockMap()
       .first()
       .getKey();
-    const mutations = Map({
+    const mutations = Map<_, mixed>({
       [`${blockKey}-0-0`]: 'reacta ',
       [`${blockKey}-0-1`]: 'draftbb',
       [`${blockKey}-0-2`]: ' graphqlccc',

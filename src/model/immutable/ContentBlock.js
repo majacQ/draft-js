@@ -4,9 +4,9 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @format
  * @flow
- * @emails oncall+draft_js
+ * @format
+ * @oncall draft_js
  */
 
 'use strict';
@@ -22,7 +22,7 @@ const Immutable = require('immutable');
 
 const {List, Map, OrderedSet, Record, Repeat} = Immutable;
 
-const EMPTY_SET = OrderedSet();
+const EMPTY_SET = OrderedSet<string>();
 
 const defaultRecord: BlockNodeConfig = {
   key: '',

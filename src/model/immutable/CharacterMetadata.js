@@ -4,9 +4,9 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @format
  * @flow
- * @emails oncall+draft_js
+ * @format
+ * @oncall draft_js
  */
 
 'use strict';
@@ -31,7 +31,7 @@ type CharacterMetadataConfig = interface {
   entity?: CharacterMetadataConfigValueType,
 };
 
-const EMPTY_SET = OrderedSet();
+const EMPTY_SET = OrderedSet<string>();
 
 const defaultRecord: CharacterMetadataConfig = {
   style: EMPTY_SET,
